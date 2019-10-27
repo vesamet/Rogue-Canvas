@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Roguelike Canvas</title>
+    <style>
+        .map-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #map {
+            background-color: lightgray;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Roguelike Canvas</h1>
+    <div class="map-container">
+        <canvas id="map" width="50" height="50">Loading...</canvas>
+    </div>
+
+    <script type="application/javascript">
+        //init variables
+        var map = document.getElementById('map');
+        var ctx = map.getContext('2d');
+        ctx.translate(0, ctx.canvas.height);
+        ctx.scale(1, -1);
+
+        var tileScale = 50
+        var tileWidth = tileScale
+        var tileHeight = 50
+
+        function load() {
+            for (var y = 0; y <= yTiles; y++) {
+                for (var x = 0; x <= xTiles; x++) {
+
+
+                }
+            }
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+            var screenWidth = window.innerWidth || document.documentElement.clientWidth ||
+                document.body.clientWidth;
+            var screenHeight = window.innerHeight || document.documentElement.clientHeight ||
+                document.body.clientHeight;
+            var xTiles = Math.floor((screenWidth - 100) / tileWidth)
+            var yTiles = Math.floor((screenHeight - 100) / tileHeight)
+            ctx.canvas.width = tileScale * xTiles
+            ctx.canvas.height = tileScale * yTiles
+            console.log(xTiles)
+            console.log(yTiles)
+            var centerX = Math.round(xTiles / 2) - 1
+            var centerY = Math.round(yTiles / 2) - 1
+            console.log(centerX)
+            console.log(centerY)
+            if (map.getContext) {
+                for (var y = 0; y <= yTiles; y++) {
+                    for (var x = 0; x <= xTiles; x++) {
+                        surfaceId = Math.round(Math.random())
+                        if (surfaceId == 1) {
+                            ctx.beginPath()
+                            ctx.fillStyle = 'rgb(200,0, 0, 0.5)';
+                            ctx.fillRect(tileScale * x, tileScale * y, tileWidth, tileHeight);
+                            ctx.rect(tileScale * x, tileScale * y, tileWidth, tileHeight);
+                            ctx.lineWidth = 4;
+                            ctx.strokeStyle = 'black';
+                            ctx.stroke()
+                        }
+                        if (surfaceId == 0) {
+                            ctx.beginPath()
+                            ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
+                            ctx.fillRect(tileScale * x, tileScale * y, tileWidth, tileHeight);
+                            ctx.rect(tileScale * x, tileScale * y, tileWidth, tileHeight);
+                            ctx.lineWidth = 4
+                            ctx.strokeStyle = 'black'
+                            ctx.stroke()
+                        }
+
+                    }
+                }
+                ctx.fillRect(tileScale * centerX, tileScale * centerY, tileWidth, tileHeight);
+            }
+        }
+
+
+        document.addEventListener("click", function (evt) {
+            var pos = getMousePos(ctx.canvas, evt);
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(Math.round(pos.x), Math.round(pos.y), tileWidth, tileHeight);
+            console.log(Math.round(pos.displayX) + " " + Math.round(Math.abs(pos.displayY)))
+            console.log(Math.round(((pos.displayX - (tileScale / 2)) / (tileScale / 2) / 2)) + " " +
+                Math.round(Math.abs(((pos.displayY + (tileScale / 2)) / (tileScale / 2)) / 2))
+                )
+        });
+
+
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top,
+                displayX: evt.clientX - rect.left,
+                displayY: evt.clientY - rect.bottom
+            };
+        }
+
+        window.onload = render
+        window.onresize = render;
+        var resized;
+        window.onresize = function () {
+            clearTimeout(resized);
+            resized = setTimeout(function () {
+                render();
+            }, 150);
+        };
+    </script>
+</body>
+
+</html>
